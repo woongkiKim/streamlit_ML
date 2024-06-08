@@ -50,15 +50,18 @@ if submit_button:
 st.header("특정 변수의 범위 예측")
 
 with st.form("range_prediction_form"):
-    selected_col = st.selectbox("범위로 지정할 변수 선택", list(default_values.keys()))
-    min_value = st.number_input(f"최소 변경 값", value=0)
-    max_value = st.number_input(f"최대 변경 값", value=1000)
-    step_value = st.number_input("스텝 값", value=10)
-
-    # 나머지 변수들 입력
-    for col in df.columns:
+    selected_col = st.selectbox("⭐️ 범위로 지정할 변수 선택", list(default_values.keys()))
+    cols = st.columns(3)
+    min_value = cols[0].number_input(f"변경될 최소 값", value=0)
+    max_value = cols[1].number_input(f"변경될 최대 값", value=1000)
+    step_value = cols[2].number_input("스텝 값", value=10)
+    st.divider()
+    
+    # 나머지 변수들 입력 (2열로 나누어 표시)
+    cols = st.columns(2)
+    for i, col in enumerate(df.columns):
         if col != selected_col:
-            default_values[col] = st.number_input(f"{col} 값", value=default_values[col])
+            default_values[col] = cols[i % 2].number_input(f"{col} 값", value=default_values[col])
     
     range_submit_button = st.form_submit_button(label="시각화")
 
@@ -73,4 +76,10 @@ if range_submit_button:
     fig = px.line(range_df, x=selected_col, y='failure_probability',
                   title=f'{selected_col} 값의 범위에 따른 불량 확률',
                   labels={selected_col: f'{selected_col}', 'failure_probability': '불량 확률 (%)'})
+    
+    ## 80 부분에 빨간색 점선 추가
+    fig.add_hline(y=80, line_dash='dot', line_color='red', annotation_text='불량률 80%', annotation_position='top right')
+    
+
+    
     st.plotly_chart(fig)

@@ -21,10 +21,9 @@ df = casting[['registration_time','mold_code','count',
 
 df['mold_code'] = df['mold_code'].astype(str)
 
-st.write(df)
-
-
 result = preprocess.hour_data_cleansing(df)
+
+
 
 # # 제조 데이터의 시간 정보 변환
 # df['registration_time'] = pd.to_datetime(df['registration_time'])
@@ -80,7 +79,6 @@ with col2:
 filtered_data = result[(result['date_time'] >= pd.to_datetime(start_date)) &
                                    (result['date_time'] <= pd.to_datetime(end_date))]
 
-
 ## 정상품 비율
 pass_ratio = filtered_data['pass_count'].sum() / filtered_data['count'].sum()
 ## 불량품 비율
@@ -102,6 +100,8 @@ with col2:
 
 # Streamlit을 사용해 대시보드에 차트 표시
 tab1, tab2, tab3 = st.tabs(['생산량', '불량률', '평균 생산 시간'])
+
+st.write(filtered_data)
 
 with tab1:
     # 날짜별, 요일별, 시간별 생산량 시각화

@@ -65,7 +65,6 @@ with col2:
 filtered_data = merge_grouped_df[(merge_grouped_df['date'] >= start_date) &
                                    (merge_grouped_df['date'] <= end_date)]
 
-st.write(filtered_data)
 
 ## 정상품 비율
 pass_ratio = filtered_data['pass_count'].sum() / filtered_data['count'].sum()

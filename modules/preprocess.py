@@ -20,16 +20,16 @@ class Preprocess:
 
 
         # 데이터프레임에서 평균 생산 시간과 생산량 계산
-        grouped_data = df.groupby(['date_time','weekday','hour'])['average_cycle_time'].agg(['mean','median','count']).reset_index()
+        grouped_data = df.groupby(['date_time','mold_code','weekday','hour'])['average_cycle_time'].agg(['mean','median','count']).reset_index()
         ## 불량률 계산
-        grouped_data2 = df.groupby(['date_time','weekday','hour'])['pass'].sum().reset_index(name='pass_count')
-        grouped_data3 = df.groupby(['date_time','weekday','hour'])['fail'].sum().reset_index(name='error_count')
+        grouped_data2 = df.groupby(['date_time','mold_code','weekday','hour'])['pass'].sum().reset_index(name='pass_count')
+        grouped_data3 = df.groupby(['date_time','mold_code','weekday','hour'])['fail'].sum().reset_index(name='error_count')
 
         merge_grouped_df = pd.merge(grouped_data, grouped_data2,
-                                    on=['date_time','weekday','hour'], how='left') 
+                                    on=['date_time','mold_code','weekday','hour'], how='left') 
 
         merge_grouped_df = pd.merge(merge_grouped_df, grouped_data3,
-                                        on=['date_time','weekday','hour'], how='left')
+                                        on=['date_time','mold_code','weekday','hour'], how='left')
 
         ## 
         merge_grouped_df['mean'] = merge_grouped_df['mean'].round(1)
