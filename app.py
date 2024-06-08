@@ -1,62 +1,63 @@
-import streamlit as st
 import pandas as pd
-from sklearn.datasets import load_iris
-from sklearn.ensemble import RandomForestClassifier
-from modules.predict import predict
-import numpy as np
+import plotly.express as px
+import streamlit as st
+from modules.charts import MakeChart
 
 
-st.title('Classifying Iris Flowers')
-st.markdown('Toy model to play to classify iris flowers into setosa, versicolor, virginica')
+st.set_page_config(
+    page_title="LS빅데이터스쿨 2기 대시보드",
+    page_icon="🏭",
+)
 
-st.header("Plant Features")
-col1, col2 = st.columns(2)
-with col1:
-    st.text("Sepal characteristics")
-    sepal_l = st.slider('Sepal lenght (cm)', 1.0, 8.0, 0.5)
-    sepal_w = st.slider('Sepal width (cm)', 2.0, 4.4, 0.5)
+# Streamlit 대시보드
+st.title('LS빅데이터 스쿨 제조 데이터 대시보드')
+st.balloons()
+st.divider()
+image_url = "https://firebasestorage.googleapis.com/v0/b/ls-storage-e452a.appspot.com/o/%E1%84%83%E1%85%A1%E1%84%8B%E1%85%B5%E1%84%8F%E1%85%A2%E1%84%89%E1%85%B3%E1%84%90%E1%85%B5%E1%86%BC.gif?alt=media&token=70587460-34c3-4a67-a056-f7a5e6ad8521"
 
-with col2:
-    st.text("Pepal characteristics")
-    petal_l = st.slider('Petal lenght (cm)', 1.0, 7.0, 0.5)
-    petal_w = st.slider('Petal width (cm)', 0.1, 2.5, 0.5)
+# HTML을 사용하여 이미지 크기 조정
+st.markdown(f'<img src="{image_url}" width="700" height="350">', unsafe_allow_html=True)
+
+st.markdown(
+    """
 
 
-if st.button('예측하기'):
-    result = predict(np.array([[sepal_l, sepal_w, petal_l, petal_w]]))
-    print(result)
-    st.text(f"✅ {result[0]}")
-          
-# # 데이터 불러오기
-# iris = load_iris()
-# X = iris.data
-# y = iris.target
-# df = pd.DataFrame(X, columns=iris.feature_names)
+## 👨🏻‍🔧 효율적인 제조, 생산관리를 위한 대시보드
 
-# # 모델 학습
-# model = RandomForestClassifier(n_estimators=100, random_state=42)
-# model.fit(X, y)
+오늘날의 제조 환경은 점점 더 복잡해지고 있으며, 경쟁력을 유지하기 위해서는 신속하고 정확한 의사결정이 필수적입니다. 
+이러한 요구에 부응하기 위해, 우리는 제조 공정 데이터를 기반으로 하는 최첨단 대시보드를 소개합니다. 
+이 대시보드는 데이터를 효율적으로 시각화하고, 원하는 시간대 조회 서비스를 제공하여 제조 공정의 모든 측면을 개선할 수 있도록 설계되었습니다.
 
-# # Streamlit 앱
-# st.title("Iris Species Prediction")
+#### 핵심 기능 및 이점
+--------------------------------
 
-# st.write("""
-# # Iris 데이터셋
-# """)
+##### 📊 실시간 데이터 시각화 
+제조 공정에서 발생하는 다양한 데이터를 수집하여 시각화합니다. 이를 통해 공정 상태를 한눈에 파악할 수 있으며, 빠른 의사결정을 지원합니다.
 
-# # 입력 받기
-# sepal_length = st.slider("Sepal length", float(df['sepal length (cm)'].min()), float(df['sepal length (cm)'].max()))
-# sepal_width = st.slider("Sepal width", float(df['sepal width (cm)'].min()), float(df['sepal width (cm)'].max()))
-# petal_length = st.slider("Petal length", float(df['petal length (cm)'].min()), float(df['petal length (cm)'].max()))
-# petal_width = st.slider("Petal width", float(df['petal width (cm)'].min()), float(df['petal width (cm)'].max()))
+--------------------------------
 
-# # 입력 데이터를 데이터프레임으로 변환
-# input_data = pd.DataFrame([[sepal_length, sepal_width, petal_length, petal_width]], columns=iris.feature_names)
+##### 📈 효율성 분석 
+각 공정 단계의 성능을 분석하여 비효율적인 부분을 식별하고, 최적화 방안을 제시합니다. 이를 통해 자원 낭비를 최소화하고, 생산성을 극대화할 수 있습니다.
 
-# # 예측
-# prediction = model.predict(input_data)
-# prediction_proba = model.predict_proba(input_data)
+--------------------------------
 
-# st.write(f"Predicted species: {iris.target_names[prediction][0]}")
-# st.write("Prediction probabilities:")
-# st.write(pd.DataFrame(prediction_proba, columns=iris.target_names))
+##### 🤖 불량요인 분석 
+과거 데이터를 기반으로 미래의 공정 상태를 예측합니다. 예측 분석 기능을 통해 사전에 문제를 예방하고, 공정 안정성을 향상시킬 수 있습니다.
+
+--------------------------------
+
+##### 🗺 맞춤형 대시보드 
+사용자의 필요에 맞게 대시보드를 맞춤화할 수 있습니다. 각 사용자에게 가장 유용한 정보를 손쉽게 확인할 수 있도록 합니다.
+
+--------------------------------
+
+##### 🛎 생산 관리 
+일자별 및 시간별 데이터 조회 서비스를 제공하여 생산 관리를 보다 효율적으로 수행할 수 있도록 합니다.
+
+
+            
+- [ ] [시간별 데이터 조회](/01_Hour_data)
+- [ ] [일자별 데이터 조회](/02_Daily_data)
+
+"""
+)
