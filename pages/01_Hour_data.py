@@ -24,60 +24,32 @@ df['mold_code'] = df['mold_code'].astype(str)
 result = preprocess.hour_data_cleansing(df)
 
 
-
-# # 제조 데이터의 시간 정보 변환
-# df['registration_time'] = pd.to_datetime(df['registration_time'])
-# df['date'] = df['registration_time'].dt.date
-# df['hour'] = df['registration_time'].dt.hour
-# df['weekday'] = df['registration_time'].dt.weekday ## 0:월요일, 6:일요일
-# df['date_time'] = pd.to_datetime(df['date'].astype(str) + ' ' + df['hour'].astype(str) + ':00:00')
-# df['weekday'] = df['weekday'].map({0:'월', 1:'화', 2:'수', 3:'목', 4:'금', 5:'토', 6:'일'})
-# # 평균 생산시간 계산
-# df['average_cycle_time'] = (df['facility_operation_cycleTime'] + df['production_cycletime']) / 2
-# ## 정상품, 불량품 생성
-# df['pass'] = df['passorfail'].apply(lambda x: 1 if x == 0 else 0)
-# df['fail'] = df['passorfail'].apply(lambda x: 1 if x == 1 else 0)
-
-
-# # 데이터프레임에서 평균 생산 시간과 생산량 계산
-# grouped_data = df.groupby(['date_time','weekday','hour'])['average_cycle_time'].agg(['mean','median','count']).reset_index()
-# ## 불량률 계산
-# grouped_data2 = df.groupby(['date_time','weekday','hour'])['pass'].sum().reset_index(name='pass_count')
-# grouped_data3 = df.groupby(['date_time','weekday','hour'])['fail'].sum().reset_index(name='error_count')
-
-# merge_grouped_df = pd.merge(grouped_data, grouped_data2,
-#                                on=['date_time','weekday','hour'], how='left') 
-
-# merge_grouped_df = pd.merge(merge_grouped_df, grouped_data3,
-#                                  on=['date_time','weekday','hour'], how='left')
-
-# ## 
-# merge_grouped_df['mean'] = merge_grouped_df['mean'].round(1)
-# merge_grouped_df['median'] = merge_grouped_df['median'].round(1)
-# merge_grouped_df['error_ratio'] = (merge_grouped_df['error_count'] / merge_grouped_df['count']).round(2)
-# merge_grouped_df['pass_ratio'] = 1 - merge_grouped_df['error_ratio'].round(2)
-# merge_grouped_df['date'] = merge_grouped_df['date_time'].dt.date
-
-
-
-
 # Streamlit 대시보드
 st.title('시간별 제조 데이터 대시보드')
 st.divider()
 
 # Streamlit에서 날짜 범위 선택 위젯을 가로로 배치
 # 도넛 차트
-col1, col2 = st.columns(2)
+col1, col2, col3 = st.columns(3)
 
 with col1:
     start_date = st.date_input('시작 날짜', value=result['date_time'].min())
+
 with col2:
     end_date = st.date_input('종료 날짜', value=result['date_time'].max())
-    
+
+with col3:
+    # mold_code 선택 위젯
+    unique_mold_codes = result['mold_code'].unique()
+    selected_mold_code = st.multiselect('Mold Code 선택', unique_mold_codes)
+
 
 # 선택한 날짜 범위에 맞게 데이터 필터링
 filtered_data = result[(result['date_time'] >= pd.to_datetime(start_date)) &
-                                   (result['date_time'] <= pd.to_datetime(end_date))]
+                                   (result['date_time'] <= pd.to_datetime(end_date)) &
+                                   (result['mold_code'].isin(selected_mold_code))]
+
+st.write(result)
 
 ## 정상품 비율
 pass_ratio = filtered_data['pass_count'].sum() / filtered_data['count'].sum()
@@ -101,7 +73,6 @@ with col2:
 # Streamlit을 사용해 대시보드에 차트 표시
 tab1, tab2, tab3 = st.tabs(['생산량', '불량률', '평균 생산 시간'])
 
-st.write(filtered_data)
 
 with tab1:
     # 날짜별, 요일별, 시간별 생산량 시각화
